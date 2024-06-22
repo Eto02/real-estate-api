@@ -22,4 +22,11 @@ const registerValidation = Yup.object({
   createdAt: Yup.date().default(() => new Date()),
 });
 
-export { registerValidation };
+const loginValidation = Yup.object({
+  username: Yup.string()
+    .required("Username is required")
+    .matches(/\D/, "Field cannot be a number"),
+  password: passwordSchema, // Using the password schema defined above
+});
+
+export { registerValidation, loginValidation };

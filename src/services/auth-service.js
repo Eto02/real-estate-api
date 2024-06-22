@@ -1,8 +1,12 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { prisma } from "../application/database.js";
-import { registerValidation } from "../validation/auth-validataion.js";
-import { validate } from "../validation/validation.js";
 import { ResponseError } from "../error/response-error.js";
+import {
+  loginValidation,
+  registerValidation,
+} from "../validation/auth-validataion.js";
+import { validate } from "../validation/validation.js";
 
 const register = async (req) => {
   const body = await validate(registerValidation, req.body);
@@ -24,11 +28,30 @@ const register = async (req) => {
 };
 
 const login = async (req) => {
-  console.log("login route works!");
-};
+  const body = await validate(loginValidation, req.body);
+  const { username, password } = body;
 
-const logout = async (req) => {
-  console.log("login route works!");
+  const user = await prisma.user.findUnique({
+    where: { username },
+  });
+  console.log(user);
+  if (!user) throw new ResponseError(401, "Username or password wrong");
+  const isPassValid = await bcrypt.compare(password, user.password);
+  if (!isPassValid) throw new ResponseError(401, "Username or password wrong");
+  const expires = 1000 * 60 * 60 * 24 * 7;
+  const token = jwt.sign(
+    {
+      id: user.id,
+    },
+    process.env.JWT_SECRET_KEY,
+    {
+      expiresIn: expires,
+    }
+  );
+  return {
+    token,
+    user,
+  };
 };
 
 const checkUserExists = async (username = "", email = "") => {
@@ -41,4 +64,4 @@ const checkUserExists = async (username = "", email = "") => {
   return false;
 };
 
-export default { login, register, logout };
+export default { login, register, checkUserExists };
