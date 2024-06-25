@@ -15,10 +15,16 @@ const errorMiddleware = async (err, req, res, next) => {
       })
       .end();
   } else if (err instanceof ValidationError) {
-    const errors = err.inner.map((err) => ({
-      field: err.path,
-      message: err.message,
-    }));
+    let errors;
+    if (err.inner.length == 1) {
+      errors = err.inner[0].message;
+    } else {
+      errors = err.inner.map((err) => ({
+        field: err.path,
+        message: err.message,
+      }));
+    }
+
     res
       .status(400)
       .json({
