@@ -33,7 +33,8 @@ const updateUser = async (req) => {
       ...(avatar && { avatar }),
     },
   });
-  return updated;
+  const { password: userPass, ...rest } = updated;
+  return rest;
 };
 
 const deleteUser = async (req) => {
