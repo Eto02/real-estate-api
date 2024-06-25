@@ -34,7 +34,6 @@ const login = async (req) => {
   const user = await prisma.user.findUnique({
     where: { username },
   });
-  console.log(user);
   if (!user) throw new ResponseError(401, "Username or password wrong");
   const isPassValid = await bcrypt.compare(password, user.password);
   if (!isPassValid) throw new ResponseError(401, "Username or password wrong");
@@ -42,15 +41,18 @@ const login = async (req) => {
   const token = jwt.sign(
     {
       id: user.id,
+      isAdmin: false,
     },
     process.env.JWT_SECRET_KEY,
     {
       expiresIn: expires,
     }
   );
+  const { password: userPass, ...userInfo } = user;
   return {
     token,
-    user,
+    userInfo,
+    expires,
   };
 };
 
