@@ -3,6 +3,7 @@ import cors from "cors";
 import { authRoutes } from "./routes/auth-route.js";
 import { verifyToken } from "../middleware/jwt-middleware.js";
 import { userRoutes } from "./routes/user-route.js";
+import { postRoutes } from "./routes/post-route.js";
 
 const router = express.Router();
 router.use(
@@ -17,5 +18,6 @@ router.get("/api/protected", verifyToken, (req, res) => {
 });
 
 router.use("/api", authRoutes);
-router.use("/api", userRoutes);
+router.use("/api/user", userRoutes);
+router.use("/api/post", postRoutes);
 export { router };

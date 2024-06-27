@@ -7,7 +7,6 @@ import {
 } from "../../controllers/user-controller.js";
 import { verifyToken } from "../../middleware/jwt-middleware.js";
 const userRoutes = express.Router();
-userRoutes.use("/user", userRoutes);
 
 userRoutes.get("/", getUsers);
 userRoutes.get("/:id", verifyToken, getUser);

@@ -2,7 +2,7 @@ import userSevice from "../services/user-service.js";
 const getUsers = async (req, res, next) => {
   try {
     const result = await userSevice.getUsers(req);
-    res.status(201).json({
+    res.status(200).json({
       data: result,
     });
   } catch (error) {
@@ -13,7 +13,7 @@ const getUsers = async (req, res, next) => {
 const getUser = async (req, res, next) => {
   try {
     const result = await userSevice.getUser(req);
-    res.status(201).json({
+    res.status(200).json({
       data: result,
     });
   } catch (error) {
@@ -24,7 +24,7 @@ const getUser = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   try {
     const result = await userSevice.updateUser(req);
-    res.status(201).json({
+    res.status(20).json({
       data: result,
     });
   } catch (error) {
@@ -35,7 +35,7 @@ const updateUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
   try {
     const result = await userSevice.deleteUser(req);
-    res.status(201).json({
+    res.status(200).json({
       data: result,
     });
   } catch (error) {
