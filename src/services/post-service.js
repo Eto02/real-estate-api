@@ -2,13 +2,27 @@ import { prisma } from "../application/database.js";
 import { ResponseError } from "../error/response-error.js";
 
 const gets = async (req) => {
-  const posts = await prisma.post.findMany();
+  const query = req.query;
+  const posts = await prisma.post.findMany({
+    where: {
+      city: {
+        contains: query.city || undefined,
+      },
+      type: query.type || undefined,
+      property: query.property || undefined,
+      bedroom: parseInt(query.bedroom) || undefined,
+      price: {
+        gte: parseInt(query.minPrice) || 0,
+        lte: parseInt(query.maxPrice) || 10000,
+      },
+    },
+  });
   return posts;
 };
 
 const get = async (req) => {
   const id = req.params.id;
-  const data = await prisma.post.findMany({
+  const data = await prisma.post.findUnique({
     where: { id },
     include: {
       postDetail: true,
