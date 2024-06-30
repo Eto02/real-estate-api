@@ -1,5 +1,9 @@
+import jwt from "jsonwebtoken";
+import { promisify } from "util";
 import { prisma } from "../application/database.js";
 import { ResponseError } from "../error/response-error.js";
+
+const verifyAsync = promisify(jwt.verify);
 
 const gets = async (req) => {
   const query = req.query;
@@ -17,6 +21,7 @@ const gets = async (req) => {
       },
     },
   });
+
   return posts;
 };
 
@@ -34,7 +39,20 @@ const get = async (req) => {
       },
     },
   });
-  return data;
+
+  const token = req.cookies?.token;
+  if (token) {
+    try {
+      const decoded = await verifyAsync(token, process.env.JWT_SECRET_KEY);
+      const saved = await prisma.savedPost.findUnique({
+        where: {
+          userId_postId: { userId: decoded.id, postId: id },
+        },
+      });
+      return { ...data, isSaved: saved ? true : false };
+    } catch (err) {}
+  }
+  return { ...data, isSaved: false };
 };
 
 const create = async (req) => {

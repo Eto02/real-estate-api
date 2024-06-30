@@ -43,4 +43,24 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-export { getUsers, getUser, updateUser, deleteUser };
+const savePost = async (req, res, next) => {
+  try {
+    const result = await userSevice.savePost(req);
+    res.status(200).json({
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const profilePost = async (req, res, next) => {
+  try {
+    const result = await userSevice.profilePost(req);
+    res.status(200).json({
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export { getUsers, getUser, updateUser, deleteUser, savePost, profilePost };

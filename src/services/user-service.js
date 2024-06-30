@@ -48,4 +48,50 @@ const deleteUser = async (req) => {
   return deleted;
 };
 
-export default { getUsers, getUser, updateUser, deleteUser };
+const savePost = async (req) => {
+  const id = req.body.postId;
+  const userId = req.user;
+
+  let savedPost = await prisma.savedPost.findUnique({
+    where: {
+      userId_postId: { userId, postId: id },
+    },
+  });
+  if (savedPost) {
+    await prisma.savedPost.delete({
+      where: {
+        id: savedPost.id,
+      },
+    });
+  } else {
+    savedPost = await prisma.savedPost.create({
+      data: { userId, postId: id },
+    });
+  }
+
+  return savedPost;
+};
+
+const profilePost = async (req) => {
+  const userId = req.user;
+  const post = await prisma.post.findMany({
+    where: { userId },
+  });
+  const saved = await prisma.savedPost.findMany({
+    where: { userId },
+    include: {
+      post: true,
+    },
+  });
+  const savedPost = saved.map((item) => item.post);
+  return { post, savedPost };
+};
+
+export default {
+  getUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+  savePost,
+  profilePost,
+};
