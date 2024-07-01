@@ -10,7 +10,7 @@ import { verifyToken } from "../../middleware/jwt-middleware.js";
 
 const chatRoutes = express.Router();
 
-chatRoutes.get("/", gets);
+chatRoutes.get("/", verifyToken, gets);
 chatRoutes.get("/:id", verifyToken, get);
 chatRoutes.post("/", verifyToken, create);
 chatRoutes.put("/:id", verifyToken, put);
