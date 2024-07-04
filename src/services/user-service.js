@@ -87,6 +87,17 @@ const profilePost = async (req) => {
   return { post, savedPost };
 };
 
+const getNotificationsNumber = async (req) => {
+  const userId = req.user;
+  const number = await prisma.chat.count({
+    where: {
+      userIDs: { hasSome: [userId] },
+    },
+  });
+
+  return number;
+};
+
 export default {
   getUsers,
   getUser,
@@ -94,4 +105,5 @@ export default {
   deleteUser,
   savePost,
   profilePost,
+  getNotificationsNumber,
 };

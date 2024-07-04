@@ -1,6 +1,7 @@
 import express from "express";
 import {
   deleteUser,
+  getNotificationsNumber,
   getUser,
   getUsers,
   profilePost,
@@ -12,6 +13,7 @@ const userRoutes = express.Router();
 
 userRoutes.get("/", getUsers);
 userRoutes.get("/post/", verifyToken, profilePost);
+userRoutes.get("/notifications", verifyToken, getNotificationsNumber);
 userRoutes.get("/:id", verifyToken, getUser);
 userRoutes.put("/:id", verifyToken, updateUser);
 userRoutes.delete("/:id", verifyToken, deleteUser);

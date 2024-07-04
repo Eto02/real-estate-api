@@ -63,4 +63,22 @@ const profilePost = async (req, res, next) => {
     next(error);
   }
 };
-export { getUsers, getUser, updateUser, deleteUser, savePost, profilePost };
+const getNotificationsNumber = async (req, res, next) => {
+  try {
+    const result = await userSevice.getNotificationsNumber(req);
+    res.status(200).json({
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export {
+  getUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+  savePost,
+  profilePost,
+  getNotificationsNumber,
+};
