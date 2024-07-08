@@ -35,22 +35,11 @@ const put = async (req, res, next) => {
   try {
     const result = await ChatService.put(req);
     res.status(200).json({
-      data: result,
+      data: "OK",
     });
   } catch (error) {
     next(error);
   }
 };
 
-const deleteData = async (req, res, next) => {
-  try {
-    const result = await ChatService.deleteData(req);
-    res.status(200).json({
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export { gets, get, create, put, deleteData };
+export { gets, get, create, put };

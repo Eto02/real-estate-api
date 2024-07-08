@@ -1,4 +1,9 @@
 import { prisma } from "../application/database.js";
+import {
+  createChatValidation,
+  getChatValidation,
+} from "../validation/chat-validation.js";
+import { validate } from "../validation/validation.js";
 
 const gets = async (req) => {
   const userId = req.user;
@@ -29,20 +34,20 @@ const gets = async (req) => {
 
 const get = async (req) => {
   const userId = req.user;
-  const params = req.params;
+  const id = await validate(getChatValidation, req.params.id);
   await prisma.chat.update({
     where: {
-      id: params.id,
+      id: id,
     },
     data: {
       seenBy: {
-        set: [userId],
+        push: [userId],
       },
     },
   });
   const data = await prisma.chat.findUnique({
     where: {
-      id: params.id,
+      id: id,
       userIDs: {
         hasSome: [userId],
       },
@@ -61,7 +66,7 @@ const get = async (req) => {
 
 const create = async (req) => {
   const userId = req.user;
-  const body = req.body;
+  const body = await validate(createChatValidation, req.body);
   const newChat = await prisma.chat.create({
     data: {
       userIDs: [userId, body.receiverId],
@@ -72,10 +77,10 @@ const create = async (req) => {
 
 const put = async (req) => {
   const userId = req.user;
-  const params = req.params;
+  const id = await validate(getChatValidation, req.params.id);
   await prisma.chat.update({
     where: {
-      id: params.id,
+      id: id,
       userIDs: {
         hasSome: [userId],
       },
@@ -89,8 +94,4 @@ const put = async (req) => {
   return true;
 };
 
-const deleteData = async (req) => {
-  return true;
-};
-
-export default { gets, get, create, put, deleteData };
+export default { gets, get, create, put };

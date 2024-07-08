@@ -2,6 +2,11 @@ import jwt from "jsonwebtoken";
 import { promisify } from "util";
 import { prisma } from "../application/database.js";
 import { ResponseError } from "../error/response-error.js";
+import {
+  createPostValidation,
+  getPostValidation,
+} from "../validation/post-validation.js";
+import { validate } from "../validation/validation.js";
 
 const verifyAsync = promisify(jwt.verify);
 
@@ -26,7 +31,7 @@ const gets = async (req) => {
 };
 
 const get = async (req) => {
-  const id = req.params.id;
+  const id = await validate(getPostValidation, req.params.id);
   const data = await prisma.post.findUnique({
     where: { id },
     include: {
@@ -56,7 +61,7 @@ const get = async (req) => {
 };
 
 const create = async (req) => {
-  const body = req.body;
+  const body = await validate(createPostValidation, req.body);
   const userId = req.user;
   const data = await prisma.post.create({
     data: { ...body.data, userId, postDetail: { create: body.detail } },
@@ -64,19 +69,15 @@ const create = async (req) => {
   return data;
 };
 
-const put = async (req) => {
-  return true;
-};
-
 const deleteData = async (req) => {
-  const id = req.params.id;
+  const id = await validate(getPostValidation, req.params.id);
   const userId = req.user;
-
+  console.log("deleteData");
   const post = await prisma.post.findUnique({
     where: { id },
   });
 
-  if (post.userId !== userId) throw new ResponseError(403, "Not Authorized!");
+  if (post?.userId !== userId) throw new ResponseError(403, "Not Authorized!");
 
   const deleted = await prisma.post.delete({
     where: { id },
@@ -84,4 +85,4 @@ const deleteData = async (req) => {
   return deleted;
 };
 
-export default { gets, get, create, put, deleteData };
+export default { gets, get, create, deleteData };

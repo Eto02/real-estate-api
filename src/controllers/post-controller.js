@@ -31,26 +31,15 @@ const create = async (req, res, next) => {
   }
 };
 
-const put = async (req, res, next) => {
-  try {
-    const result = await PostSevice.put(req);
-    res.status(200).json({
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 const deleteData = async (req, res, next) => {
   try {
     const result = await PostSevice.deleteData(req);
     res.status(200).json({
-      data: result,
+      data: "OK",
     });
   } catch (error) {
     next(error);
   }
 };
 
-export { gets, get, create, put, deleteData };
+export { gets, get, create, deleteData };

@@ -1,15 +1,18 @@
 import bcrypt from "bcrypt";
 import { prisma } from "../application/database.js";
 import { ResponseError } from "../error/response-error.js";
+import {
+  getUserValidation,
+  updateUserValidation,
+} from "../validation/user-validation.js";
 import { validate } from "../validation/validation.js";
-import { updateUserValidation } from "../validation/user-validation.js";
 const getUsers = async (req) => {
   const users = await prisma.user.findMany();
   return users;
 };
 
 const getUser = async (req) => {
-  const id = req.params.id;
+  const id = await validate(getUserValidation, req.params.id);
   const user = await prisma.user.findMany({
     where: { id },
   });
@@ -38,7 +41,7 @@ const updateUser = async (req) => {
 };
 
 const deleteUser = async (req) => {
-  const id = req.params.id;
+  const id = await validate(getUserValidation, req.params.id);
   const userId = req.user;
 
   if (id !== userId) throw new ResponseError(403, "Not Authorized!");
@@ -49,7 +52,7 @@ const deleteUser = async (req) => {
 };
 
 const savePost = async (req) => {
-  const id = req.body.postId;
+  const id = await validate(getUserValidation, req.body.postId);
   const userId = req.user;
 
   let savedPost = await prisma.savedPost.findUnique({
@@ -92,6 +95,9 @@ const getNotificationsNumber = async (req) => {
   const number = await prisma.chat.count({
     where: {
       userIDs: { hasSome: [userId] },
+      NOT: {
+        seenBy: { hasSome: [userId] },
+      },
     },
   });
 

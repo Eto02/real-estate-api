@@ -20,13 +20,13 @@ const registerValidation = Yup.object({
     .email("Invalid email format"),
   password: passwordSchema, // Using the password schema defined above
   createdAt: Yup.date().default(() => new Date()),
-});
+}).noUnknown(true);
 
 const loginValidation = Yup.object({
   username: Yup.string()
     .required("Username is required")
     .matches(/\D/, "Field cannot be a number"),
   password: passwordSchema, // Using the password schema defined above
-});
+}).noUnknown(true);
 
 export { registerValidation, loginValidation };

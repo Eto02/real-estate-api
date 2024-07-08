@@ -36,7 +36,7 @@ const deleteUser = async (req, res, next) => {
   try {
     const result = await userSevice.deleteUser(req);
     res.status(200).json({
-      data: result,
+      data: "OK",
     });
   } catch (error) {
     next(error);

@@ -26,4 +26,8 @@ const updateUserValidation = Yup.object()
   })
   .noUnknown(true);
 
-export { updateUserValidation };
+const getUserValidation = Yup.string()
+  .matches(/^[0-9a-fA-F]{24}$/, "The ID is in the wrong format")
+  .required("The ID is in the wrong format");
+
+export { updateUserValidation, getUserValidation };
