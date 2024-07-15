@@ -2,8 +2,10 @@ import PostSevice from "../services/post-service.js";
 const gets = async (req, res, next) => {
   try {
     const result = await PostSevice.gets(req);
+    const { posts, pagination } = result;
     res.status(200).json({
-      data: result,
+      data: posts,
+      pagination,
     });
   } catch (error) {
     next(error);

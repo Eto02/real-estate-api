@@ -30,7 +30,7 @@ model Post {
   id         String      @id @default(auto()) @map("_id") @db.ObjectId
   title      String
   price      Int
-  images     String[]
+  images     File[]   
   address    String
   city       String
   bedroom    Int
@@ -107,4 +107,6 @@ model File {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   filename String
   path     String
+  post     Post?    @relation( fields: [postId], references: [id])
+  postId   String?  @db.ObjectId
 }

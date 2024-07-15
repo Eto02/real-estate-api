@@ -12,6 +12,10 @@ const verifyAsync = promisify(jwt.verify);
 
 const gets = async (req) => {
   const query = req.query;
+  const page = parseInt(req.query.page) || 1; // Halaman yang diminta, default: 1
+  const limit = parseInt(req.query.limit) || 5; // Jumlah item per halaman, default: 5
+
+  const skip = (page - 1) * limit;
   const posts = await prisma.post.findMany({
     where: {
       city: {
@@ -25,9 +29,21 @@ const gets = async (req) => {
         lte: parseInt(query.maxPrice) || 10000,
       },
     },
+    skip: skip,
+    take: limit,
   });
+  const totalCount = await prisma.user.count();
+  const totalPages = Math.ceil(totalCount / limit);
 
-  return posts;
+  return {
+    posts,
+    pagination: {
+      page,
+      limit,
+      totalCount,
+      totalPages,
+    },
+  };
 };
 
 const get = async (req) => {
