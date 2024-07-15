@@ -6,6 +6,7 @@ import { userRoutes } from "./routes/user-route.js";
 import { postRoutes } from "./routes/post-route.js";
 import { chatRoutes } from "./routes/chat-route.js";
 import { messageRoutes } from "./routes/mesage-router.js";
+import { fileRotes } from "./routes/file-route.js";
 
 const router = express.Router();
 router.use(
@@ -24,4 +25,5 @@ router.use("/api/user", userRoutes);
 router.use("/api/post", postRoutes);
 router.use("/api/chat", chatRoutes);
 router.use("/api/message", messageRoutes);
+router.use("/api/file", fileRotes);
 export { router };

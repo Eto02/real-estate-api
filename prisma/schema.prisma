@@ -102,3 +102,9 @@ model Message {
   chatId    String   @db.ObjectId
   createdAt DateTime @default(now())
 }
+
+model File {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  filename String
+  path     String
+}
