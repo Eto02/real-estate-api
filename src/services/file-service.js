@@ -8,8 +8,6 @@ import { validate } from "../validation/validation.js";
 
 const create = async (req) => {
   const files = await validate(fileValidation, { files: req.files });
-  console.log(files);
-  console.log(req.files);
 
   const uploadedFiles = req.files.map((file) => ({
     filename: file.filename,

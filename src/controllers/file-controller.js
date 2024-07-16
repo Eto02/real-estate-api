@@ -10,7 +10,6 @@ const create = async (req, res, next) => {
     if (req.files && req.files.length > 0) {
       req.files.forEach((file) => {
         const filePath = file.path;
-        console.log(filePath);
         // Logika untuk menghapus file di sini
         fs.unlinkSync(filePath);
       });

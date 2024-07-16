@@ -25,7 +25,7 @@ const updateUser = async (req) => {
   const id = req.params.id;
   const userId = req.user;
   let updatedPass = null;
-
+  console.log(avatar);
   if (id !== userId) throw new ResponseError(403, "Not Authorized!");
   if (password) updatedPass = await bcrypt.hash(password, 10);
   const updated = await prisma.user.update({

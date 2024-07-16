@@ -24,7 +24,7 @@ const getUser = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   try {
     const result = await userSevice.updateUser(req);
-    res.status(20).json({
+    res.status(200).json({
       data: result,
     });
   } catch (error) {

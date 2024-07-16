@@ -88,7 +88,6 @@ const create = async (req) => {
 const deleteData = async (req) => {
   const id = await validate(getPostValidation, req.params.id);
   const userId = req.user;
-  console.log("deleteData");
   const post = await prisma.post.findUnique({
     where: { id },
   });
