@@ -73,6 +73,32 @@ const getNotificationsNumber = async (req, res, next) => {
     next(error);
   }
 };
+
+const getPosts = async (req, res, next) => {
+  try {
+    const result = await userSevice.getPosts(req);
+    const { data, pagination } = result;
+    res.status(200).json({
+      data: data,
+      pagination,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getSavedPosts = async (req, res, next) => {
+  try {
+    const result = await userSevice.getSavedPosts(req);
+    const { data, pagination } = result;
+    res.status(200).json({
+      data: data,
+      pagination,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export {
   getUsers,
   getUser,
@@ -81,4 +107,6 @@ export {
   savePost,
   profilePost,
   getNotificationsNumber,
+  getPosts,
+  getSavedPosts,
 };

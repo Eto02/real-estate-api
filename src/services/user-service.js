@@ -25,7 +25,6 @@ const updateUser = async (req) => {
   const id = req.params.id;
   const userId = req.user;
   let updatedPass = null;
-  console.log(avatar);
   if (id !== userId) throw new ResponseError(403, "Not Authorized!");
   if (password) updatedPass = await bcrypt.hash(password, 10);
   const updated = await prisma.user.update({
@@ -90,6 +89,67 @@ const profilePost = async (req) => {
   return { post, savedPost };
 };
 
+const getPosts = async (req) => {
+  const userId = req.user;
+  const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
+  const limit = parseInt(req.query.limit, 10) || 10; // Default to 10 items per page if not provided
+  const skip = (page - 1) * limit;
+
+  const data = await prisma.post.findMany({
+    where: { userId },
+    skip: skip,
+    take: limit,
+  });
+
+  const totalCount = await prisma.post.count({
+    where: { userId },
+  });
+  const totalPages = Math.ceil(totalCount / limit);
+
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+      totalCount,
+      totalPages,
+    },
+  };
+};
+
+const getSavedPosts = async (req) => {
+  const userId = req.user;
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 10;
+  const skip = (page - 1) * limit;
+
+  const saved = await prisma.savedPost.findMany({
+    where: { userId },
+    include: {
+      post: true,
+    },
+    skip: skip,
+    take: limit,
+  });
+
+  const data = saved.map((item) => item.post);
+
+  const totalCount = await prisma.savedPost.count({
+    where: { userId },
+  });
+  const totalPages = Math.ceil(totalCount / limit);
+
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+      totalCount,
+      totalPages,
+    },
+  };
+};
+
 const getNotificationsNumber = async (req) => {
   const userId = req.user;
   const number = await prisma.chat.count({
@@ -112,4 +172,6 @@ export default {
   savePost,
   profilePost,
   getNotificationsNumber,
+  getPosts,
+  getSavedPosts,
 };
